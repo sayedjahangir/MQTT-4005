@@ -3,16 +3,19 @@ import random, json # this library is used for encoding and decoding JSON data
 import datetime
 
 from broker import broker # uses the global broker settings
+from failed_connection import text_dump # dumps to a text file if there's an error
+from rsa_encryption import encrypt # encrypts publications
 
 def on_connect(client, userdata, rc): # connects the device to the broker
 	if rc != 0:
 		print("Unable to connect to MQTT Broker...")
+        # text_dump(input)
 	else:
 		print("Connected with MQTT Broker: ") + str(broker.mqtt_broker)
 
 def publish_To_Topic(topic, message):
 	mqttc.publish(topic, message)
-	print("Published: " + str(message) + " on MQTT Topic: " + str(topic))
+	print(f"Published: {str(message)} on MQTT Topic: {str(topic)}.")
 
 def run_program(): # QOL improvement to check if correct settings are in use
     proceed = input(f"Proceed with the following settings: {broker.mqtt_broker}, {broker.mqtt_port}, {broker.keep_alive_interval}, Y/N? ")
@@ -22,7 +25,7 @@ def run_program(): # QOL improvement to check if correct settings are in use
         input("Please change the settings. ")
         quit
     else:
-        run_program()
+        run_program() # asks again if user types an unexpected argument
 
 def on_publish(client, userdata, mid):
 	pass
@@ -38,7 +41,10 @@ mqttc.on_connect = on_connect
 mqttc.on_disconnect = on_disconnect
 mqttc.on_publish = on_publish
 
-run_program()
+try:
+    run_program()
+except:
+    print("Error: invalid configuration.")
 
 Humidity_Fake_Value = float("{0:.2f}".format(random.uniform(5, 90)))
 Humidity_Data = {}
@@ -47,4 +53,4 @@ Humidity_Data['Date'] = (datetime.today()).strftime("%d-%b-%Y %H:%M:%S:%f")
 Humidity_Data['Humidity'] = Humidity_Fake_Value
 humidity_json_data = json.dumps(Humidity_Data)
 
-publish_To_Topic(MQTT_Topic_Humidity, humidity_json_data)
+publish_To_Topic(encrypt(MQTT_Topic_Humidity), encrypt(humidity_json_data))
