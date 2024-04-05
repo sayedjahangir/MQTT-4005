@@ -1,0 +1,28 @@
+import paho.mqtt.client as mqtt # this library provides MQTT client functionality in Python
+import random
+
+def on_connect(client, userdata, rc): # connects the device to the broker
+	if rc != 0:
+		print("Unable to connect to MQTT Broker...")
+	else:
+		print("Connected with MQTT Broker: ") + "localhost"
+
+def publish_To_Topic(topic, message):
+	mqttc.publish(topic, message)
+	print("Published: " + str(message) + " on MQTT Topic: " + str(topic))
+
+def on_publish(client, userdata, mid):
+	pass
+
+def on_disconnect(client, userdata, rc):
+	if rc !=0:
+		pass
+
+mqttc = mqtt.Client()
+mqttc.on_connect = on_connect
+mqttc.on_disconnect = on_disconnect
+mqttc.on_publish = on_publish
+
+mqttc.connect("localhost", 1883, 45)
+
+publish_To_Topic("MQTT_Topic_Humidity", random.randrange(5, 90))
