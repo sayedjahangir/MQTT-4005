@@ -53,7 +53,5 @@ MotionData['Sensor_ID'] = "PIRSensor"
 MotionData['Date'] = (datetime.today()).strftime("%d-%b-%Y %H:%M:%S:%f")
 MotionData['Motion'] = MotionFakeData
 MotionJsonData = json.dumps(MotionData)
-print(MotionJsonData)
-print(MotionData)
 
 publish_To_Topic(encrypt(MQTT_Topic_Motion), encrypt(MotionJsonData)) # calls publish function above
