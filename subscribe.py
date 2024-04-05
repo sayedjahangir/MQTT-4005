@@ -1,4 +1,5 @@
 import paho.mqtt.client as mqtt
+from data_to_DB import RecieveData
 
 MQTT_Broker = "localhost"
 MQTT_Port = 1883
@@ -10,8 +11,9 @@ def on_connect(mosq, obj, flags, rc):
 
 def on_message(mosq, obj, msg):
     print("MQTT data received...")
-    print("MQTT Topic:" , str(msg.topic))
-    print("Message:", str(msg.payload))
+    print(f"MQTT Topic: {str(msg.topic)}.")
+    print(f"Message: {str(msg.payload)}.")
+    RecieveData(msg.topic, msg.payload)
 
 def on_subscribe(mosq, obj, mid, granted_qos):
     pass
@@ -22,6 +24,6 @@ mqttc.on_message = on_message
 mqttc.on_connect = on_connect
 mqttc.on_subscribe = on_subscribe
 
-mqttc.connect(MQTT_Broker, MQTT_Port, Keep_Alive_Interval)
+mqttc.connect(MQTT_Broker, int(MQTT_Port), int(Keep_Alive_Interval))
 
 mqttc.loop_forever()
