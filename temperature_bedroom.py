@@ -53,7 +53,5 @@ TempData['Sensor_ID'] = "Thermometer"
 TempData['Date'] = (datetime.today()).strftime("%d-%b-%Y %H:%M:%S:%f")
 TempData['Temperature'] = TempFakeData
 tempJsonData = json.dumps(TempData)
-print(tempJsonData)
-print(TempData)
 
 publish_To_Topic(encrypt(MQTT_Topic_Temperature), encrypt(tempJsonData)) # calls publish function above
